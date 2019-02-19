@@ -1,0 +1,14 @@
+body {
+  margin: 0;
+  border: 0;
+  padding: 0;
+}
+
+.main_container {
+  width: 98%;
+  padding: 2%;
+  height: 80%;
+  border: 2px solid red;
+  margin: 0 auto;
+  margin-top: 2%;
+}
