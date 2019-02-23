@@ -1,0 +1,33 @@
+/* CSS Document */
+
+body{
+	background-color:#2045FA;
+}
+
+.col-sm-10{
+	background-color: #fff;
+}
+
+#side_menu a{
+	color: white;
+}
+
+#side_menu .active a{
+	color: #fff;
+	background-color:#00D0FF;
+	font-weight: bold;
+}
+
+#side_menu a:hover{
+	color: #ffffff;
+	background-color:#3BB7DD;
+	font-weight:bold;
+	display: block;
+}
+#footer{
+	padding: 10px;
+	border-top: 1px solid black;
+	color:#eeeeee;
+	background-color: #211f22;
+	text-align: center;
+}
