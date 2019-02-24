@@ -1,5 +1,6 @@
 <?php require_once("session.php"); ?>
 <?php require_once("functions.php"); ?>
+<?php require_once("db.php"); ?>
 <!doctype html>
 <html lang="en">
   <head>
@@ -12,10 +13,53 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 	  <link rel="stylesheet" href="all.css">
+	  <link href="https://fonts.googleapis.com/css?family=Exo+2:400,500,600" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Montserrat:700|Roboto" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Playfair+Display:700" rel="stylesheet">
 
     <title>Admin Dashboard</title>
   </head>
   <body>
+	  <style>#mainNav{background-color:white;}#mainNav .navbar-toggler{font-size:12px;right:0;padding:13px;text-transform:uppercase;color:white;border:0;background-color:#0182AC;font-family:'Exo 2',sans-serif}#mainNav .navbar-brand{padding:0!important}#mainNav .navbar-brand img{height:50px}#mainNav .navbar-nav .nav-item .nav-link{font-size:1em;font-weight:600;padding:.75em 0;letter-spacing:1px;color:black;font-family:'Exo 2',sans-serif}#mainNav .navbar-nav .nav-item .nav-link.active,#mainNav .navbar-nav .nav-item .nav-link:hover{color:#0182AC}@media (min-width:992px){#mainNav{padding-top:25px;padding-bottom:25px;-webkit-transition:padding-top 0.3s,padding-bottom 0.3s;-moz-transition:padding-top 0.3s,padding-bottom 0.3s;transition:padding-top 0.3s,padding-bottom 0.3s;border:none;background-color:transparent}#mainNav .navbar-brand{font-size:1.75em;-webkit-transition:all 0.3s;-moz-transition:all 0.3s;transition:all 0.3s}#mainNav .navbar-nav .nav-item .nav-link{padding:1.1em 1em!important}#mainNav.navbar-shrink{padding-top:0;padding-bottom:0;background-color:white}#mainNav.navbar-shrink .navbar-brand{font-size:1.25em}#mainNav .container{padding:10px;}}</style>
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top navbar-shrink animated fadeInDown" id="mainNav">
+    <div class="container">
+        <a class="navbar-brand" href="#page-top"><img src=/acmblog/assets/brandlogo.png></a>
+        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+            Menu
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav text-uppercase ml-auto">
+                <li class="nav-item">
+                    <a id="home-link" class="nav-link" href=/acmblog/>Home</a>
+                </li>
+                <li class="nav-item">
+                    <a id="student-affairs-link" class="nav-link" href="#">Student Affairs</a>
+                </li>
+                <li class="nav-item">
+                    <a id="professors-corner-link" class="nav-link" href="#">Professors' Corner</a>
+                </li>
+                <li class="nav-item active">
+                    <a id="alumni-link" class="nav-link" href="#">Alumni</a>
+                </li>
+                <li class="nav-item">
+                    <a id="about-link" class="nav-link" href=/acmblog/about>About</a>
+                </li>
+            </ul>
+			<form action="blog.php" class="form-inline">
+				<div class="form-group">
+					<input type="text" class="form-control" name="search" placeholder="Search">
+				</div>
+					<button class="btn btn-default" name="searchb">Go</button>
+			</form>
+        </div>
+    </div>
+</nav>
+<!-- #nav -->
+<script>
+    $("#home-link").addClass('active');
+    $("#home-link").removeAttr("href");
+</script>
+	  <br><br><br><br>
     <div class="container-fluid">
 	  <div class="row">
 		  <div class="col-sm-2">
@@ -62,44 +106,71 @@
 			  </div><!--End of Side area-->
 		  
 		  <div class="col-sm-10">
-			  
-			  <h1>Admin Dashboard</h1>
 			  <div><?php echo Message(); 
 				         echo SuccessMessage();
 				    ?></div>
+			  <h1>Admin Dashboard</h1>
+			  <div class="table-responsive">
+				  <table class="table table-striped table-hover" >
+				  	<tr>
+					  	<th>S.No</th>
+						<th>Post Title</th>
+						<th>Date & Time</th>
+						<th>Author</th>
+						<th>Category</th>
+						<th>Banner</th>
+						<th>Comments</th>
+						<th>Actions</th>
+						<th>Details</th>
+					  </tr>
+					<?php 
+					  $link;
+					  $viewquery="SELECT * FROM admin_panel ORDER BY dateandtime desc;";
+					  $exec=mysqli_query($link,$viewquery);
+					  $sno=0;
+					  while($DataRows=mysqli_fetch_array($exec)){
+						  $id=$DataRows["id"];
+						  $DateTime=$DataRows["dateandtime"];
+						  $title=$DataRows["title"];
+						  $category=$DataRows["category"];
+						  $Admin=$DataRows["author"];
+						  $image=$DataRows["image"];
+						  $post=$DataRows["post"];
+						  $sno++;
+					  
+					  ?>
+					  
+					  <tr>
+					  	<td><?php echo $sno; ?></td>
+						<td><?php 
+						  if(strlen($title>20)){$title=substr($title,0,20).'..';}
+						  echo $title; ?></td>
+						<td><?php echo $DateTime; ?></td>
+						<td><?php echo $Admin; ?></td>
+						<td><?php echo $category; ?></td>
+						<td><img src="img/<?php echo $image; ?>" width="200px"; height="40px"></td>
+						<td>Processing</td>
+						<td>
+							<a href="editpost.php?edit=<?php echo $id; ?>">
+								<span class="btn btn-primary">Edit</span></a> 
+							<a href="deletepost.php?delete=<?php echo $id; ?>">
+								<span class="btn btn-danger">Delete</span>
+							</a> 
+						  </td>
+						<td><a href="fullpost.php?id=<?php echo $id; ?>" target="_blank"><span class="btn btn-primary">Live Preview</span>
+							</a>
+							</td>
+					  </tr>
+					  
+					  <?php  } ?>
+				  </table>			  
+			  
+			  </div>
 			
 			  
 			  
 			  
-		  	<h4>About</h4>
-			  <p>Lorem Ipsum</p>
-			  
-			  <h4>About</h4>
-			  <p>Lorem Ipsum</p>
-			  
-			  <h4>About</h4>
-			  <p>Lorem Ipsum</p>
-			  
-			  <h4>About</h4>
-			  <p>Lorem Ipsum</p>
-			  
-			  <h4>About</h4>
-			  <p>Lorem Ipsum</p>
-			  
-			  <h4>About</h4>
-			  <p>Lorem Ipsum</p>
-			  
-			  <h4>About</h4>
-			  <p>Lorem Ipsum</p>
-			  
-			  <h4>About</h4>
-			  <p>Lorem Ipsum</p>
-			  
-			  <h4>About</h4>
-			  <p>Lorem Ipsum</p>
-			  
-			  <h4>About</h4>
-			  <p>Lorem Ipsum</p>
+		  	
 			
 		  </div><!--Ending of main area-->
 		
